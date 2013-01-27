@@ -1,0 +1,6 @@
+*.pyc
+logs/*.log
+local.cfg
+venv
+egg-cache
+*~
