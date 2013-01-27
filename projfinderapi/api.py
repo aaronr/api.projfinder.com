@@ -3,10 +3,12 @@ import psycopg2
 import sys
 import os
 import json
+from utils.jsonp import jsonp
 
 def api_landing():
     return render_template('api_landing.html')
 
+@jsonp
 def reproject():
     if request.method == 'GET':
         connstring="dbname='projfinder' port=5432 user='aaronr' host='localhost' password='aaronr'"
@@ -27,12 +29,13 @@ def reproject():
             sql = "select st_asgeojson(st_geometryfromtext('POINT(%s %s)',4326),15,4) as request, st_asgeojson(st_transform(st_geometryfromtext('POINT(%s %s)',4326),%s),15,4) as result limit 1;" % (x,y,x,y,epsg)
             cursor.execute(sql)
             results = cursor.fetchone()                
-            reprojection['request'] = json.loads(results[0])
-            reprojection['response'] = json.loads(results[1])
+            reprojection['request'] = [json.loads(results[0])]
+            reprojection['response'] = [json.loads(results[1])]
             return jsonify(reprojection)
         else:
             abort(404)
 
+@jsonp
 def projfinder():
     if request.method == 'GET':
         connstring="dbname='projfinder' port=5432 user='aaronr' host='localhost' password='aaronr'"
