@@ -78,14 +78,17 @@ def projfinder():
             cursor.execute(sql)
             results = cursor.fetchall()
             for i,row in enumerate(results):
-                projresponse = {}
-                projresponse['type'] = 'projresponse'
-                projresponse['rank'] = i
-                projresponse['point'] = json.loads(row[0])
-                projresponse['srid'] = row[1]
-                projresponse['name'] = row[2]
-                projresponse['distance'] = row[3]
-                projfinder['response'].append(projresponse)
+                try:
+                    projresponse = {}
+                    projresponse['type'] = 'projresponse'
+                    projresponse['rank'] = i
+                    projresponse['point'] = json.loads(row[0])
+                    projresponse['srid'] = row[1]
+                    projresponse['name'] = row[2]
+                    projresponse['distance'] = row[3]
+                    projfinder['response'].append(projresponse)
+                except Exception, e:            
+                    pass
             return jsonify(projfinder)
         else:
             abort(404)
